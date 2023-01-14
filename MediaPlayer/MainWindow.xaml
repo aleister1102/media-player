@@ -38,11 +38,17 @@
                 HorizontalAlignment="Center"
                 Orientation="Horizontal">
 
-                <Button Name="PlayButton" Style="{StaticResource ControlButton}">
-                    <Image Source="images/play.png" />
+                <Button
+                    Name="PlayButton"
+                    Click="PlayButton_Click"
+                    Style="{StaticResource ControlButton}">
+                    <Image Name="PlayButtonImage" Source="images/play.png" />
                 </Button>
 
-                <Button Name="ResetButton" Style="{StaticResource ControlButton}">
+                <Button
+                    Name="ResetButton"
+                    Click="ResetButton_Click"
+                    Style="{StaticResource ControlButton}">
                     <Image Source="images/reset.png" />
                 </Button>
             </StackPanel>
@@ -64,7 +70,10 @@
                     FontSize="20" />
 
                 <StackPanel Margin="0,10,0,0">
-                    <ListView Name="FilesListView" Height="520">
+                    <ListView
+                        Name="FilesListView"
+                        Height="520"
+                        SelectionChanged="FilesListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}" />
@@ -80,7 +89,7 @@
                 Width="700"
                 Height="800"
                 DockPanel.Dock="Right">
-                <MediaElement x:Name="Player" />
+                <MediaElement x:Name="Player" LoadedBehavior="Manual" />
             </StackPanel>
         </Border>
     </DockPanel>
