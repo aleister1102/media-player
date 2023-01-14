@@ -1,0 +1,14 @@
+﻿<Application
+    x:Class="MediaPlayer.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:MediaPlayer"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style x:Key="ControlButton">
+            <Setter Property="Button.Width" Value="50" />
+            <Setter Property="Button.Height" Value="50" />
+            <Setter Property="Button.Margin" Value="50,0,10,0" />
+        </Style>
+    </Application.Resources>
+</Application>
