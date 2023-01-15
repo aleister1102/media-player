@@ -36,13 +36,220 @@
             Modifiers="Ctrl" />
     </Window.InputBindings>
 
-    <DockPanel>
+    <StackPanel>
+        <!--  Main panel  -->
+        <Border BorderBrush="Black" BorderThickness="0,0,0,1">
+            <StackPanel>
+                <MediaElement
+                    x:Name="Player"
+                    Width="1100"
+                    Height="460"
+                    LoadedBehavior="Manual"
+                    MediaEnded="Player_MediaEnded"
+                    MediaOpened="Player_MediaOpened"
+                    Stretch="Fill" />
+            </StackPanel>
+        </Border>
+
+        <!--  Media panel  -->
+        <Border
+            Margin="0,10,0,0"
+            BorderBrush="Black"
+            BorderThickness="0,0,1,1">
+            <Grid
+                Name="Playlist"
+                Width="1100"
+                Height="300">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="300" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Width="300">
+                    <!--  Media list  -->
+                    <Label
+                        HorizontalAlignment="Center"
+                        Content="Main queue"
+                        FontSize="14"
+                        FontWeight="Bold" />
+                    <ListView
+                        Name="MediaListView"
+                        Height="260"
+                        ItemsSource="{Binding Path=CurrentPlaylist.MediaList}"
+                        SelectionChanged="MediaListView_SelectionChanged">
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+
+                        <ListView.Resources>
+                            <ContextMenu x:Key="MediaContextMenu">
+                                <MenuItem Click="DeleteMedia_Click" Header="Delete">
+                                    <MenuItem.Icon>
+                                        <Image Source="images/delete.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListView.Resources>
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="ContextMenu" Value="{StaticResource MediaContextMenu}" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1">
+
+                    <!--  Playlist name textbox  -->
+                    <Label
+                        Content="Playlist name"
+                        FontSize="14"
+                        FontWeight="Bold" />
+                    <TextBox
+                        Name="PlaylistNameTextBox"
+                        Width="360"
+                        Height="20"
+                        HorizontalAlignment="Center" />
+
+                    <!--  Playlist combo box  -->
+                    <Label
+                        Content="Current playlist"
+                        FontSize="14"
+                        FontWeight="Bold" />
+                    <ComboBox
+                        Name="PlaylistComboBox"
+                        Width="360"
+                        ItemsSource="{Binding Path=Playlists}"
+                        SelectedItem="{Binding Path=CurrentPlaylist}"
+                        SelectionChanged="PlaylistComboBox_SelectionChanged">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <!--  Buttons  -->
+                    <Grid Width="360" Margin="0,20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button
+                            Name="CreatePlaylistButton"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Click="CreatePlaylistButton_Click"
+                            Content="Create new playlist"
+                            Style="{StaticResource RectangularButton}" />
+
+                        <Button
+                            Name="SavePlaylistButton"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Click="SavePlaylistButton_Click"
+                            Content="Save current playlist"
+                            Style="{StaticResource RectangularButton}" />
+
+                        <Button
+                            Name="LoadPlaylistButton"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Click="LoadPlaylistButton_Click"
+                            Content="Load playlist"
+                            Style="{StaticResource RectangularButton}" />
+
+                        <Button
+                            Name="DeletePlaylistButton"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Click="DeletePlaylistButton_Click"
+                            Content="Delete current playlist"
+                            Style="{StaticResource RectangularButton}" />
+
+                        <Button
+                            Name="AddMediaButton"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Click="AddMediaButton_Click"
+                            Content="Add media to queue"
+                            Style="{StaticResource RectangularButton}" />
+
+                        <Button
+                            Name="ClearPlaylistButton"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Click="ClearPlaylistButton_Click"
+                            Content="Clear all media in playlist"
+                            Style="{StaticResource RectangularButton}" />
+
+                        <Button
+                            Name="ReloadPlaylistButton"
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Click="ReloadPlaylistButton_Click"
+                            Content="Reload current playlist"
+                            Style="{StaticResource RectangularButton}" />
+
+                        <Button
+                            Name="ClearRecentlyListButton"
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Click="ClearRecentlyListButton_Click"
+                            Content="Clear recently media"
+                            Style="{StaticResource RectangularButton}" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Width="300">
+                    <!--  Recently played media list view  -->
+                    <Label
+                        HorizontalAlignment="Center"
+                        Content="Recently played"
+                        FontSize="14"
+                        FontWeight="Bold" />
+                    <ListView
+                        x:Name="RecentlyPlayedListView"
+                        Height="260"
+                        ItemsSource="{Binding RecentlyPlayedList.MediaList}"
+                        SelectionChanged="RecentlyPlayedListView_SelectionChanged">
+
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </Grid>
+        </Border>
+
         <!--  Controls  -->
         <StackPanel
             Name="Controls"
             Width="1000"
-            Height="100"
-            DockPanel.Dock="Bottom">
+            Height="100">
 
             <!--  Slider  -->
             <StackPanel>
@@ -73,7 +280,7 @@
                 </StackPanel>
             </StackPanel>
 
-            <!--  Buttons  -->
+            <!--  Control buttons  -->
             <StackPanel
                 Name="ControlButtons"
                 HorizontalAlignment="Center"
@@ -121,166 +328,5 @@
                 </Button>
             </StackPanel>
         </StackPanel>
-
-        <!--  Side panel  -->
-        <Border BorderBrush="Black" BorderThickness="0,0,1,1">
-            <StackPanel
-                Name="Playlist"
-                Width="300"
-                Height="800"
-                DockPanel.Dock="Left">
-
-                <!--  Buttons  -->
-                <WrapPanel Margin="0,10,0,0">
-                    <Button
-                        Name="CreatePlaylistButton"
-                        Click="CreatePlaylistButton_Click"
-                        Content="Create new playlist"
-                        Style="{StaticResource RectangularButton}" />
-
-                    <Button
-                        Name="SavePlaylistButton"
-                        Click="SavePlaylistButton_Click"
-                        Content="Save current playlist"
-                        Style="{StaticResource RectangularButton}" />
-
-                    <Button
-                        Name="LoadPlaylistButton"
-                        Click="LoadPlaylistButton_Click"
-                        Content="Load playlist"
-                        Style="{StaticResource RectangularButton}" />
-
-                    <Button
-                        Name="DeletePlaylistButton"
-                        Click="DeletePlaylistButton_Click"
-                        Content="Delete current playlist"
-                        Style="{StaticResource RectangularButton}" />
-                </WrapPanel>
-
-                <!--  Current playlist  -->
-                <Label
-                    Content="Playlist name"
-                    FontSize="14"
-                    FontWeight="Bold" />
-                <TextBox
-                    Name="PlaylistNameTextBox"
-                    Width="290"
-                    Height="20"
-                    HorizontalAlignment="Center" />
-
-                <!--  Playlist combo box  -->
-                <Label
-                    Content="Current playlist"
-                    FontSize="14"
-                    FontWeight="Bold" />
-                <ComboBox
-                    Name="PlaylistComboBox"
-                    Width="290"
-                    Margin="0,5"
-                    ItemsSource="{Binding Path=Playlists}"
-                    SelectedItem="{Binding Path=CurrentPlaylist}"
-                    SelectionChanged="PlaylistComboBox_SelectionChanged">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=Name}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-                <StackPanel Margin="0,5,0,0">
-                    <!--  Media list  -->
-                    <Label
-                        HorizontalAlignment="Center"
-                        Content="Main queue"
-                        FontSize="14"
-                        FontWeight="Bold" />
-                    <ListView
-                        Name="MediaListView"
-                        Height="300"
-                        ItemsSource="{Binding Path=CurrentPlaylist.MediaList}"
-                        SelectionChanged="MediaListView_SelectionChanged">
-
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}" />
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-
-                        <ListView.Resources>
-                            <ContextMenu x:Key="MediaContextMenu">
-                                <MenuItem Click="DeleteMedia_Click" Header="Delete">
-                                    <MenuItem.Icon>
-                                        <Image Source="images/delete.png" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                            </ContextMenu>
-                        </ListView.Resources>
-
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="ContextMenu" Value="{StaticResource MediaContextMenu}" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
-
-                    <!--  Recently played media list view  -->
-                    <Label
-                        HorizontalAlignment="Center"
-                        Content="Recently played"
-                        FontSize="14"
-                        FontWeight="Bold" />
-                    <ListView
-                        Name="RecentlyPlayedListView"
-                        Height="140"
-                        ItemsSource="{Binding Path=RecentlyPlayedList.MediaList}"
-                        SelectionChanged="RecentlyPlayedListView_SelectionChanged">
-
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}" />
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </StackPanel>
-
-                <!--  Playlist buttons  -->
-                <WrapPanel
-                    Margin="0,5"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-
-                    <Button
-                        Name="AddMediaButton"
-                        Click="AddMediaButton_Click"
-                        Content="Add media to queue"
-                        Style="{StaticResource RectangularButton}" />
-
-                    <Button
-                        Name="ClearMediaListButton"
-                        Click="ClearMediaListButton_Click"
-                        Content="Clear all media in queue"
-                        Style="{StaticResource RectangularButton}" />
-
-                    <Button
-                        Name="ClearRecentlyListButton"
-                        Click="ClearRecentlyListButton_Click"
-                        Content="Clear recently media"
-                        Style="{StaticResource RectangularButton}" />
-                </WrapPanel>
-            </StackPanel>
-        </Border>
-
-        <Border BorderBrush="Black" BorderThickness="0,0,0,1">
-            <StackPanel
-                Width="700"
-                Height="800"
-                DockPanel.Dock="Right">
-                <MediaElement
-                    x:Name="Player"
-                    LoadedBehavior="Manual"
-                    MediaEnded="Player_MediaEnded"
-                    MediaOpened="Player_MediaOpened" />
-            </StackPanel>
-        </Border>
-    </DockPanel>
+    </StackPanel>
 </Window>

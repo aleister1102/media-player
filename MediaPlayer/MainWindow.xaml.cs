@@ -170,15 +170,15 @@ namespace MediaPlayer
 
         private void PlaylistComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            var selectedPlayList = (MediaPlaylist)PlaylistComboBox.SelectedItem;
+            var selectedPlaylist = (MediaPlaylist)PlaylistComboBox.SelectedItem;
 
-            if (selectedPlayList is not null)
+            if (selectedPlaylist is not null)
             {
-                _mediaController.CurrentPlaylist = selectedPlayList;
+                _mediaController.CurrentPlaylist = selectedPlaylist;
 
-                if (selectedPlayList.Path != string.Empty)
+                if (selectedPlaylist.Path != string.Empty)
                 {
-                    string[] mediaPaths = File.ReadAllLines(selectedPlayList.Path).Skip(1).ToArray();
+                    string[] mediaPaths = File.ReadAllLines(selectedPlaylist.Path).Skip(1).ToArray();
 
                     LoadMedia(_mediaController.CurrentPlaylist, mediaPaths);
                 }
@@ -252,7 +252,7 @@ namespace MediaPlayer
             }
         }
 
-        private void ClearMediaListButton_Click(object sender, RoutedEventArgs e)
+        private void ClearPlaylistButton_Click(object sender, RoutedEventArgs e)
         {
             _mediaController.CurrentPlaylist.MediaList.Clear();
         }
@@ -396,6 +396,15 @@ namespace MediaPlayer
             _mediaController.RecentlyPlayedList.MediaList.Clear();
 
             File.WriteAllText("resources/recently.txt", "");
+        }
+
+        private void ReloadPlaylistButton_Click(object sender, RoutedEventArgs e)
+        {
+            var currentPlaylist = _mediaController.CurrentPlaylist;
+
+            string[] mediaPaths = File.ReadAllLines(currentPlaylist.Path).Skip(1).ToArray();
+
+            LoadMedia(_mediaController.CurrentPlaylist, mediaPaths);
         }
     }
 }

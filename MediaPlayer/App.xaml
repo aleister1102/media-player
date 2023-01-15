@@ -16,6 +16,7 @@
             <Setter Property="Button.Height" Value="30" />
             <Setter Property="Button.Margin" Value="3" />
             <Setter Property="Button.FontSize" Value="12" />
+            <Setter Property="Button.HorizontalAlignment" Value="Center" />
         </Style>
     </Application.Resources>
 </Application>
