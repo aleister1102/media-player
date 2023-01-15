@@ -374,9 +374,13 @@ namespace MediaPlayer
         private void LoadRecentlyPlayedMedia()
         {
             var recentlyPlayedList = _mediaController.RecentlyPlayedList;
-            var recentlyMediaPaths = File.ReadAllLines(_recentlyFile);
 
-            LoadMedia(recentlyPlayedList, recentlyMediaPaths);
+            if (File.Exists(_recentlyFile) is true)
+            {
+                var recentlyMediaPaths = File.ReadAllLines(_recentlyFile);
+
+                LoadMedia(recentlyPlayedList, recentlyMediaPaths);
+            }
         }
 
         private void RecentlyPlayedListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
