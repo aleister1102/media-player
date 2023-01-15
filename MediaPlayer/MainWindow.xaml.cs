@@ -337,7 +337,9 @@ namespace MediaPlayer
 
             int totalMedia = _mediaController.CurrentPlaylist.MediaList.Count;
 
-            int previousIndex = currentIndex - 1 < 0 ? 0 : currentIndex - 1;
+            int previousIndex = _mediaController.IsShuffled
+                ? new Random().Next(totalMedia)
+                : (currentIndex - 1 < 0 ? 0 : currentIndex - 1);
 
             MediaListView.SelectedIndex = previousIndex;
         }
@@ -349,7 +351,9 @@ namespace MediaPlayer
 
             int totalMedia = _mediaController.CurrentPlaylist.MediaList.Count;
 
-            int nextIndex = currentIndex + 1 == totalMedia ? totalMedia : currentIndex + 1;
+            int nextIndex = _mediaController.IsShuffled
+               ? new Random().Next(totalMedia)
+               : (currentIndex + 1 == totalMedia ? totalMedia : currentIndex + 1);
 
             MediaListView.SelectedIndex = nextIndex;
         }
