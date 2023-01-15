@@ -21,7 +21,7 @@ namespace MediaPlayer.DTO
 
         public ObservableCollection<MediaPlaylist> Playlists { get; set; } = new();
 
-        public MediaPlaylist CurrentPlaylist { get; set; }
+        public MediaPlaylist CurrentPlaylist { get; set; } = new();
 
         public Media CurrentMedia { get; set; } = new();
 

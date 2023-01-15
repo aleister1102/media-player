@@ -207,6 +207,7 @@ namespace MediaPlayer
 
         private void ClearPlaylistButton_Click(object sender, RoutedEventArgs e)
         {
+            _mediaController.CurrentPlaylist.MediaList.Clear();
         }
 
         private void DeletePlaylistButton_Click(object sender, RoutedEventArgs e)
