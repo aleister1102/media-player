@@ -222,9 +222,6 @@ namespace MediaPlayer
         {
             MediaPlaylist playList = _mediaController.CurrentPlaylist;
 
-            if (Directory.Exists("playlists") is false)
-                Directory.CreateDirectory("playlists");
-
             if (playList is not null)
             {
                 string playListName = playList.Name;
@@ -238,7 +235,15 @@ namespace MediaPlayer
                     return;
                 }
 
-                string path = Path.Combine("playlists", $"{playListName}.txt");
+                var savingScreen = new SaveFileDialog()
+                {
+                    FileName = playListName,
+                    Filter = "Text Files|*.txt"
+                };
+
+                if (savingScreen.ShowDialog() == false) return;
+
+                string path = savingScreen.FileName;
 
                 List<string> mediaList = playList.MediaList.Select(media => media.FilePath).ToList();
 
