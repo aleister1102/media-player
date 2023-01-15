@@ -13,12 +13,14 @@
     <None Remove="images\pause.png" />
     <None Remove="images\play.png" />
     <None Remove="images\reset.png" />
+    <None Remove="images\shuffle.png" />
+    <None Remove="images\skip-to-start.png" />
     <None Remove="images\stop.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="images\delete.png" />
-    <Resource Include="images\icon.ico" />
+    <SplashScreen Include="images\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +30,8 @@
   <ItemGroup>
     <Resource Include="images\pause.png" />
     <Resource Include="images\play.png" />
-    <Resource Include="images\reset.png" />
+    <Resource Include="images\shuffle.png" />
+    <Resource Include="images\skip-to-start.png" />
     <Resource Include="images\stop.png" />
   </ItemGroup>
 

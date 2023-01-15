@@ -17,11 +17,5 @@
             <Setter Property="Button.Margin" Value="5,0" />
             <Setter Property="Button.FontSize" Value="12" />
         </Style>
-
-        <Style x:Key="SliderPanel">
-            <Setter Property="StackPanel.Margin" Value="0,10" />
-            <Setter Property="StackPanel.HorizontalAlignment" Value="Center" />
-            <Setter Property="StackPanel.Orientation" Value="Horizontal" />
-        </Style>
     </Application.Resources>
 </Application>

@@ -31,6 +31,8 @@ namespace MediaPlayer.DTO
 
         public string WindowTitle { get; set; } = string.Empty;
 
+        public bool IsShuffled { get; set; } = false;
+
         public MediaController()
         {
             PlayButtonImage = new BitmapImage(new Uri(_playButtonImages[MediaState.Stopped], UriKind.Relative));

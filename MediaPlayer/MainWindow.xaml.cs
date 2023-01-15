@@ -62,6 +62,8 @@ namespace MediaPlayer
             {
                 _mediaController.CurrentMedia = selectedMedia;
 
+                MediaListView.ScrollIntoView(MediaListView.SelectedItem);
+
                 Player.Source = new Uri(selectedMedia.FilePath, UriKind.Absolute);
 
                 InitNewTimer();
@@ -80,7 +82,10 @@ namespace MediaPlayer
             int minutes = Player.Position.Minutes;
             int seconds = Player.Position.Seconds;
 
-            _mediaTimer.TimeElapsed = new TimeSpan(hours, minutes, seconds);
+            var currentPosition = new TimeSpan(hours, minutes, seconds);
+
+            if (currentPosition <= _mediaTimer.TimeRemaining)
+                _mediaTimer.TimeElapsed = currentPosition;
         }
 
         private void Player_MediaOpened(object sender, RoutedEventArgs e)
@@ -99,46 +104,28 @@ namespace MediaPlayer
             if (Player.Source is not null)
             {
                 if (_mediaController.IsPlaying())
-                    PauseMedia();
+                {
+                    Player.Pause();
+                    _mediaTimer.Stop();
+                    _mediaController.UpdateState(MediaState.Paused);
+                }
                 else
-                    PlayMedia();
+                {
+                    Player.Play();
+                    _mediaTimer.Start();
+                    _mediaController.UpdateState(MediaState.Playing);
+                }
             }
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             if (Player.Source is not null)
-                StopMedia();
-        }
-
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (Player.Source is not null)
             {
-                StopMedia();
-                PlayMedia();
+                Player.Stop();
+                _mediaTimer.Stop();
+                _mediaController.UpdateState(MediaState.Stopped);
             }
-        }
-
-        private void PlayMedia()
-        {
-            Player.Play();
-            _mediaTimer.Start();
-            _mediaController.UpdateState(MediaState.Playing);
-        }
-
-        private void PauseMedia()
-        {
-            Player.Pause();
-            _mediaTimer.Stop();
-            _mediaController.UpdateState(MediaState.Paused);
-        }
-
-        private void StopMedia()
-        {
-            Player.Stop();
-            _mediaTimer.Stop();
-            _mediaController.UpdateState(MediaState.Stopped);
         }
 
         private void ProgressSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
@@ -265,6 +252,34 @@ namespace MediaPlayer
             }
 
             PlaylistComboBox.SelectedIndex = 0;
+        }
+
+        private void ShuffleButton_Click(object sender, RoutedEventArgs e)
+        {
+            _mediaController.IsShuffled = !_mediaController.IsShuffled;
+        }
+
+        private void Player_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            int currentIndex = MediaListView.SelectedIndex;
+            int totalMedia = _mediaController.CurrentPlaylist.MediaList.Count;
+            int nextIndex = GetNextMediaIndex(currentIndex, totalMedia);
+
+            MediaListView.SelectedIndex = nextIndex;
+        }
+
+        private int GetNextMediaIndex(int currentIndex, int totalMedia)
+        {
+            int nextIndex;
+
+            if (_mediaController.IsShuffled)
+            {
+                nextIndex = new Random().Next(totalMedia);
+            }
+            else
+                nextIndex = (currentIndex + 1) % totalMedia;
+
+            return nextIndex;
         }
     }
 }
