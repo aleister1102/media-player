@@ -5,12 +5,18 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:MediaPlayer"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
+    Title="{Binding Path=WindowTitle}"
     Width="1000"
     Height="920"
     Loaded="Window_Loaded"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+
+    <Window.Resources>
+        <local:TimeSpanToTextConverter x:Key="TimeSpanToTextConverter" />
+        <local:TimeSpanToSecondsConverter x:Key="TimeSpanToSecondsConverter" />
+    </Window.Resources>
+
     <DockPanel>
         <!--  Controls  -->
         <StackPanel
@@ -25,18 +31,21 @@
                     <TextBlock
                         Name="TimeElapsed"
                         d:Text="0:00:01"
-                        Text="0:0:0" />
+                        FontSize="14"
+                        Text="{Binding Path=TimeElapsed, Converter={StaticResource TimeSpanToTextConverter}}" />
 
                     <Slider
                         Name="ProgressSlider"
                         Width="800"
                         Margin="30,0"
-                        ValueChanged="ProgressSlider_ValueChanged" />
+                        Thumb.DragCompleted="ProgressSlider_DragCompleted"
+                        Value="{Binding Path=TimeElapsed, Converter={StaticResource TimeSpanToSecondsConverter}}" />
 
                     <TextBlock
                         Name="TimeRemaining"
                         d:Text="1:00:00"
-                        Text="0:0:0" />
+                        FontSize="14"
+                        Text="{Binding Path=TimeRemaining, Converter={StaticResource TimeSpanToTextConverter}}" />
                 </StackPanel>
             </StackPanel>
 
@@ -50,7 +59,7 @@
                     Name="PlayButton"
                     Click="PlayButton_Click"
                     Style="{StaticResource ControlButton}">
-                    <Image Name="PlayButtonImage" Source="images/play.png" />
+                    <Image Name="PlayButtonImage" Source="{Binding Path=PlayButtonImage}" />
                 </Button>
 
                 <Button
@@ -87,6 +96,7 @@
                     <ListView
                         Name="MediaListView"
                         Height="520"
+                        ItemsSource="{Binding Path=MediaList}"
                         SelectionChanged="MediaListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
