@@ -11,22 +11,6 @@ using System.Windows.Threading;
 
 namespace MediaPlayer
 {
-    public static class Extension
-    {
-        public static ObservableCollection<Media> Clone(this ObservableCollection<Media> collection)
-        {
-            var result = new ObservableCollection<Media>();
-
-            foreach (var item in collection)
-            {
-                var clone = (Media)item.Clone();
-                result.Add(clone);
-            }
-
-            return result;
-        }
-    }
-
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public MainWindow()
@@ -36,6 +20,7 @@ namespace MediaPlayer
 
         private readonly MediaController _mediaController = new();
         private readonly MediaTimer _mediaTimer = new();
+        private readonly string _recentlyFile = "resources/recently.txt";
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -363,17 +348,17 @@ namespace MediaPlayer
             MediaListView.SelectedIndex = nextIndex;
         }
 
-        private static void SavePlayedMedia(Media media)
+        private void SavePlayedMedia(Media media)
         {
             if (Directory.Exists("resources") is false)
                 Directory.CreateDirectory("resources");
 
-            File.AppendAllText("resources/recently.txt", $"{media.FilePath}\n");
+            File.AppendAllText(_recentlyFile, $"{media.FilePath}\n");
         }
 
         private void LoadRecentlyPlayedMedia()
         {
-            var recentlyMedia = File.ReadAllLines("resources/recently.txt");
+            var recentlyMedia = File.ReadAllLines(_recentlyFile);
 
             var recentlyPlayedList = _mediaController.RecentlyPlayedList;
 
@@ -404,16 +389,19 @@ namespace MediaPlayer
         {
             _mediaController.RecentlyPlayedList.MediaList.Clear();
 
-            File.WriteAllText("resources/recently.txt", "");
+            File.WriteAllText(_recentlyFile, "");
         }
 
         private void ReloadPlaylistButton_Click(object sender, RoutedEventArgs e)
         {
             var currentPlaylist = _mediaController.CurrentPlaylist;
 
-            string[] mediaPaths = File.ReadAllLines(currentPlaylist.Path).Skip(1).ToArray();
+            if (currentPlaylist.Path != string.Empty)
+            {
+                string[] mediaPaths = File.ReadAllLines(currentPlaylist.Path).Skip(1).ToArray();
 
-            LoadMedia(_mediaController.CurrentPlaylist, mediaPaths);
+                LoadMedia(_mediaController.CurrentPlaylist, mediaPaths);
+            }
         }
     }
 }

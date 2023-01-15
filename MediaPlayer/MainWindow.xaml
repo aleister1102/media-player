@@ -174,7 +174,7 @@
                             Grid.Row="1"
                             Grid.Column="0"
                             Click="LoadPlaylistButton_Click"
-                            Content="Load playlist"
+                            Content="Load playlist(s)"
                             Style="{StaticResource RectangularButton}" />
 
                         <Button
@@ -190,7 +190,7 @@
                             Grid.Row="2"
                             Grid.Column="0"
                             Click="AddMediaButton_Click"
-                            Content="Add media to queue"
+                            Content="Add media to playlist"
                             Style="{StaticResource RectangularButton}" />
 
                         <Button
