@@ -10,5 +10,18 @@
             <Setter Property="Button.Height" Value="50" />
             <Setter Property="Button.Margin" Value="20,0,10,0" />
         </Style>
+
+        <Style x:Key="RectangularButton">
+            <Setter Property="Button.Width" Value="150" />
+            <Setter Property="Button.Height" Value="50" />
+            <Setter Property="Button.Margin" Value="0,20,0,0" />
+            <Setter Property="Button.FontSize" Value="20" />
+        </Style>
+
+        <Style x:Key="SliderPanel">
+            <Setter Property="StackPanel.Margin" Value="0,10" />
+            <Setter Property="StackPanel.HorizontalAlignment" Value="Center" />
+            <Setter Property="StackPanel.Orientation" Value="Horizontal" />
+        </Style>
     </Application.Resources>
 </Application>

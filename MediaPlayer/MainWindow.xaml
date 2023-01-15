@@ -12,19 +12,16 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <DockPanel>
-
+        <!--  Controls  -->
         <StackPanel
             Name="Controls"
             Width="1000"
             Height="100"
             DockPanel.Dock="Bottom">
 
+            <!--  Slider  -->
             <StackPanel>
-                <StackPanel
-                    Margin="0,10"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
-
+                <StackPanel Style="{StaticResource SliderPanel}">
                     <TextBlock
                         Name="TimeElapsed"
                         d:Text="0:00:01"
@@ -43,6 +40,7 @@
                 </StackPanel>
             </StackPanel>
 
+            <!--  Buttons  -->
             <StackPanel
                 Name="ControlButtons"
                 HorizontalAlignment="Center"
@@ -71,6 +69,7 @@
             </StackPanel>
         </StackPanel>
 
+        <!--  Side panel  -->
         <Border BorderBrush="Black" BorderThickness="0,0,1,1">
             <StackPanel
                 Name="Playlist"
@@ -79,13 +78,11 @@
                 DockPanel.Dock="Left">
                 <Button
                     Name="BrowseButton"
-                    Width="150"
-                    Height="50"
-                    Margin="0,20,0,0"
                     Click="BrowseButton_Click"
                     Content="Browse"
-                    FontSize="20" />
+                    Style="{StaticResource RectangularButton}" />
 
+                <!--  Media list  -->
                 <StackPanel Margin="0,10,0,0">
                     <ListView
                         Name="MediaListView"
