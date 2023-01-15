@@ -6,8 +6,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Windows;
-using System.Windows.Automation.Peers;
 using System.Windows.Threading;
 
 namespace MediaPlayer
@@ -31,17 +31,17 @@ namespace MediaPlayer
             ProgressSlider.DataContext = _mediaTimer;
         }
 
-        private void BrowseButton_Click(object sender, RoutedEventArgs e)
+        private void AddMediaButton_Click(object sender, RoutedEventArgs e)
         {
             var browsingScreen = new OpenFileDialog { Multiselect = true };
 
-            if (browsingScreen.ShowDialog() == true)
+            if (browsingScreen.ShowDialog() is true)
             {
-                LoadFilesFrom(browsingScreen.FileNames.ToArray());
+                LoadMediaFrom(browsingScreen.FileNames.ToArray());
             }
         }
 
-        private void LoadFilesFrom(string[] filesPaths)
+        private void LoadMediaFrom(string[] filesPaths)
         {
             foreach (var filePath in filesPaths)
             {
@@ -58,11 +58,14 @@ namespace MediaPlayer
         {
             var selectedMedia = (Media)MediaListView.SelectedItem;
 
-            _mediaController.CurrentMedia = selectedMedia;
+            if (selectedMedia is not null)
+            {
+                _mediaController.CurrentMedia = selectedMedia;
 
-            Player.Source = new Uri(selectedMedia.FilePath, UriKind.Absolute);
+                Player.Source = new Uri(selectedMedia.FilePath, UriKind.Absolute);
 
-            InitNewTimer();
+                InitNewTimer();
+            }
         }
 
         private void InitNewTimer()
@@ -194,6 +197,13 @@ namespace MediaPlayer
             if (playList is not null)
             {
                 string playListName = playList.Name;
+
+                if (playListName is "")
+                {
+                    Message.Text = "Fail: please create a playlist first!";
+                    return;
+                }
+
                 string path = Path.Combine("playlists", $"{playListName}.txt");
 
                 List<string> mediaList = playList.MediaList.Select(media => media.FilePath).ToList();
@@ -201,11 +211,11 @@ namespace MediaPlayer
                 File.WriteAllText(path, $"Playlist name:  {playListName}\n");
                 File.AppendAllLines(path, mediaList);
 
-                Message.Text = "Success: save playlist successfully!";
+                Message.Text = $"Success: save {playListName} playlist successfully!";
             }
         }
 
-        private void ClearPlaylistButton_Click(object sender, RoutedEventArgs e)
+        private void ClearMediaListButton_Click(object sender, RoutedEventArgs e)
         {
             _mediaController.CurrentPlaylist.MediaList.Clear();
         }
@@ -216,6 +226,45 @@ namespace MediaPlayer
 
             if (currentPlaylist is not null)
                 _mediaController.Playlists.Remove(currentPlaylist);
+        }
+
+        private void DeleteMedia_Click(object sender, RoutedEventArgs e)
+        {
+            var media = (Media)MediaListView.SelectedItem;
+
+            if (media is not null)
+                _mediaController.CurrentPlaylist.MediaList.Remove(media);
+        }
+
+        private void LoadPlaylistButton_Click(object sender, RoutedEventArgs e)
+        {
+            var browsingScreen = new OpenFileDialog() { Multiselect = true };
+
+            if (browsingScreen.ShowDialog() is true)
+            {
+                LoadPlaylistsFrom(browsingScreen.FileNames.ToArray());
+            }
+        }
+
+        private void LoadPlaylistsFrom(string[] playlistsPath)
+        {
+            foreach (var playlistPath in playlistsPath)
+            {
+                string playlistName = Path.GetFileNameWithoutExtension(playlistPath);
+
+                if (_mediaController.Playlists.Any((playlist) => playlist.Name == playlistName) is false)
+                {
+                    _mediaController.CurrentPlaylist = new MediaPlaylist { Name = playlistName };
+
+                    string[] mediaPaths = File.ReadAllLines(playlistPath).Skip(1).ToArray();
+
+                    LoadMediaFrom(mediaPaths);
+
+                    _mediaController.Playlists.Add(_mediaController.CurrentPlaylist);
+                }
+            }
+
+            PlaylistComboBox.SelectedIndex = 0;
         }
     }
 }

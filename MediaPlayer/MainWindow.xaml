@@ -86,12 +86,45 @@
                 Height="800"
                 DockPanel.Dock="Left">
 
-                <!--  Browse button  -->
-                <Button
-                    Name="BrowseButton"
-                    Click="BrowseButton_Click"
-                    Content="Browse"
-                    Style="{StaticResource RectangularButton}" />
+                <!--  Buttons  -->
+                <WrapPanel Margin="0,10">
+                    <Button
+                        Name="CreatePlaylistButton"
+                        Click="CreatePlaylistButton_Click"
+                        Content="Create new playlist"
+                        Style="{StaticResource RectangularButton}" />
+
+                    <Button
+                        Name="SavePlaylistButton"
+                        Click="SavePlaylistButton_Click"
+                        Content="Save current playlist"
+                        Style="{StaticResource RectangularButton}" />
+
+                    <Button
+                        Name="LoadPlaylistButton"
+                        Click="LoadPlaylistButton_Click"
+                        Content="Load a playlist"
+                        Style="{StaticResource RectangularButton}" />
+
+                    <Button
+                        Name="DeletePlaylistButton"
+                        Click="DeletePlaylistButton_Click"
+                        Content="Delete current playlist"
+                        Style="{StaticResource RectangularButton}" />
+                </WrapPanel>
+
+                <TextBox
+                    Name="PlaylistNameTextBox"
+                    Width="290"
+                    Height="30"
+                    Margin="5,10"
+                    HorizontalAlignment="Center" />
+
+                <TextBlock
+                    Name="Message"
+                    Width="290"
+                    Margin="5,0"
+                    FontSize="14" />
 
                 <!--  Playlist combo box  -->
                 <ComboBox
@@ -114,11 +147,28 @@
                         Height="500"
                         ItemsSource="{Binding Path=CurrentPlaylist.MediaList}"
                         SelectionChanged="MediaListView_SelectionChanged">
+
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Name}" />
                             </DataTemplate>
                         </ListView.ItemTemplate>
+
+                        <ListView.Resources>
+                            <ContextMenu x:Key="MediaContextMenu">
+                                <MenuItem Click="DeleteMedia_Click" Header="Delete">
+                                    <MenuItem.Icon>
+                                        <Image Source="images/delete.png" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListView.Resources>
+
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="ContextMenu" Value="{StaticResource MediaContextMenu}" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
                     </ListView>
                 </StackPanel>
 
@@ -129,49 +179,16 @@
                     Orientation="Horizontal">
 
                     <Button
-                        Name="CreatePlaylistButton"
-                        Width="140"
-                        Height="30"
-                        Margin="5,0"
-                        Click="CreatePlaylistButton_Click"
-                        Content="Create new playlist" />
+                        Name="AddMediaButton"
+                        Click="AddMediaButton_Click"
+                        Content="Add media to playlist"
+                        Style="{StaticResource RectangularButton}" />
 
                     <Button
-                        Name="SavePlaylistButton"
-                        Width="140"
-                        Height="30"
-                        Margin="5,0"
-                        Click="SavePlaylistButton_Click"
-                        Content="Save current playlist" />
-
-                    <Button
-                        Name="ClearPlaylistButton"
-                        Width="140"
-                        Height="30"
-                        Margin="5,0"
-                        Click="ClearPlaylistButton_Click"
-                        Content="Clear current playlist" />
-
-                    <Button
-                        Name="DeletePlaylistButton"
-                        Width="140"
-                        Height="30"
-                        Margin="5,0"
-                        Click="DeletePlaylistButton_Click"
-                        Content="Delete current playlist" />
-
-                    <TextBox
-                        Name="PlaylistNameTextBox"
-                        Width="290"
-                        Height="30"
-                        Margin="5,10"
-                        HorizontalAlignment="Center" />
-
-                    <TextBlock
-                        Name="Message"
-                        Width="290"
-                        Margin="5,0"
-                        FontSize="14" />
+                        Name="ClearMediaListButton"
+                        Click="ClearMediaListButton_Click"
+                        Content="Clear all media in playlist"
+                        Style="{StaticResource RectangularButton}" />
                 </WrapPanel>
             </StackPanel>
         </Border>

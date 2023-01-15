@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="images\delete.png" />
     <None Remove="images\pause.png" />
     <None Remove="images\play.png" />
     <None Remove="images\reset.png" />
@@ -16,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\delete.png" />
     <Resource Include="images\icon.ico" />
   </ItemGroup>
 
