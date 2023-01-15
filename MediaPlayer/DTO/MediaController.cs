@@ -23,6 +23,8 @@ namespace MediaPlayer.DTO
 
         public MediaPlaylist CurrentPlaylist { get; set; } = new();
 
+        public MediaPlaylist RecentlyPlayedList { get; set; } = new();
+
         public Media CurrentMedia { get; set; } = new();
 
         public string State { get; set; } = "stop";

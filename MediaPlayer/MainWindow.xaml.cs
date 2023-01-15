@@ -1,4 +1,5 @@
-﻿using MediaPlayer.DTO;
+﻿using Accessibility;
+using MediaPlayer.DTO;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,22 @@ using System.Windows.Threading;
 
 namespace MediaPlayer
 {
+    public static class Extension
+    {
+        public static ObservableCollection<Media> Clone(this ObservableCollection<Media> collection)
+        {
+            var result = new ObservableCollection<Media>();
+
+            foreach (var item in collection)
+            {
+                var clone = (Media)item.Clone();
+                result.Add(clone);
+            }
+
+            return result;
+        }
+    }
+
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public MainWindow()
@@ -29,27 +46,35 @@ namespace MediaPlayer
             TimeElapsed.DataContext = _mediaTimer;
             TimeRemaining.DataContext = _mediaTimer;
             ProgressSlider.DataContext = _mediaTimer;
+
+            LoadRecentlyPlayedMedia();
         }
 
         private void AddMediaButton_Click(object sender, RoutedEventArgs e)
         {
-            var browsingScreen = new OpenFileDialog { Multiselect = true };
+            var browsingScreen = new OpenFileDialog
+            {
+                Multiselect = true,
+                Filter = "Media|*.mp4;*.mkv;*.flv;*.mpg;*.mp3"
+            };
 
             if (browsingScreen.ShowDialog() is true)
             {
-                LoadMediaFrom(browsingScreen.FileNames.ToArray());
+                var currentPlaylist = _mediaController.CurrentPlaylist;
+
+                LoadMedia(currentPlaylist, browsingScreen.FileNames.ToArray());
             }
         }
 
-        private void LoadMediaFrom(string[] filesPaths)
+        private static void LoadMedia(MediaPlaylist playlist, string[] filesPaths)
         {
             foreach (var filePath in filesPaths)
             {
-                var currentMediaList = _mediaController.CurrentPlaylist.MediaList;
+                var mediaList = playlist.MediaList;
 
-                if (currentMediaList.Any((media) => media.FilePath == filePath) is false)
+                if (mediaList.Any((media) => media.FilePath == filePath) is false)
                 {
-                    currentMediaList.Add(new Media() { FilePath = filePath });
+                    mediaList.Add(new Media() { FilePath = filePath });
                 }
             }
         }
@@ -65,6 +90,10 @@ namespace MediaPlayer
                 MediaListView.ScrollIntoView(MediaListView.SelectedItem);
 
                 Player.Source = new Uri(selectedMedia.FilePath, UriKind.Absolute);
+                Player.Stop();
+
+                _mediaTimer.Stop();
+                _mediaController.UpdateState(MediaState.Stopped);
 
                 InitNewTimer();
             }
@@ -114,6 +143,10 @@ namespace MediaPlayer
                     Player.Play();
                     _mediaTimer.Start();
                     _mediaController.UpdateState(MediaState.Playing);
+
+                    SavePlayedMedia(_mediaController.CurrentMedia);
+
+                    LoadRecentlyPlayedMedia();
                 }
             }
         }
@@ -144,6 +177,10 @@ namespace MediaPlayer
             if (selectedPlayList is not null)
             {
                 _mediaController.CurrentPlaylist = selectedPlayList;
+
+                string[] mediaPaths = File.ReadAllLines(selectedPlayList.Path).Skip(1).ToArray();
+
+                LoadMedia(_mediaController.CurrentPlaylist, mediaPaths);
             }
         }
 
@@ -153,12 +190,18 @@ namespace MediaPlayer
 
             if (playListName == "")
             {
-                Message.Text = "Fail: please type a playlist name!";
+                MessageBox.Show("Please type a playlist name!",
+                                "Warning",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
             }
             else
             {
                 if (_mediaController.Playlists.Any(playlist => playlist.Name == playListName))
-                    Message.Text = "Fail: this playlist already exists!";
+                    MessageBox.Show("This playlist already exists!",
+                                    "Errot",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
                 else
                 {
                     var newPlaylist = new MediaPlaylist { Name = playListName };
@@ -167,7 +210,10 @@ namespace MediaPlayer
 
                     PlaylistComboBox.SelectedItem = newPlaylist;
 
-                    Message.Text = "Success: create playlist successfully!";
+                    MessageBox.Show("Create playlist successfully!",
+                                    "Success",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Information);
                 }
             }
         }
@@ -177,9 +223,7 @@ namespace MediaPlayer
             MediaPlaylist playList = _mediaController.CurrentPlaylist;
 
             if (Directory.Exists("playlists") is false)
-            {
                 Directory.CreateDirectory("playlists");
-            }
 
             if (playList is not null)
             {
@@ -187,7 +231,10 @@ namespace MediaPlayer
 
                 if (playListName is "")
                 {
-                    Message.Text = "Fail: please create a playlist first!";
+                    MessageBox.Show("Please create a playlist first!",
+                                    "Warning",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
                     return;
                 }
 
@@ -198,7 +245,10 @@ namespace MediaPlayer
                 File.WriteAllText(path, $"Playlist name:  {playListName}\n");
                 File.AppendAllLines(path, mediaList);
 
-                Message.Text = $"Success: save {playListName} playlist successfully!";
+                MessageBox.Show($"Save '{playListName}' playlist successfully!",
+                                "Success",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
             }
         }
 
@@ -233,11 +283,11 @@ namespace MediaPlayer
 
             if (browsingScreen.ShowDialog() is true)
             {
-                LoadPlaylistsFrom(browsingScreen.FileNames.ToArray());
+                LoadPlaylists(browsingScreen.FileNames.ToArray());
             }
         }
 
-        private void LoadPlaylistsFrom(string[] playlistsPath)
+        private void LoadPlaylists(string[] playlistsPath)
         {
             foreach (var playlistPath in playlistsPath)
             {
@@ -245,12 +295,12 @@ namespace MediaPlayer
 
                 if (_mediaController.Playlists.Any((playlist) => playlist.Name == playlistName) is false)
                 {
-                    _mediaController.CurrentPlaylist = new MediaPlaylist { Name = playlistName };
-
+                    var currentPlaylist = new MediaPlaylist { Path = playlistPath, Name = playlistName };
                     string[] mediaPaths = File.ReadAllLines(playlistPath).Skip(1).ToArray();
 
-                    LoadMediaFrom(mediaPaths);
+                    LoadMedia(currentPlaylist, mediaPaths);
 
+                    _mediaController.CurrentPlaylist = currentPlaylist;
                     _mediaController.Playlists.Add(_mediaController.CurrentPlaylist);
                 }
             }
@@ -297,6 +347,50 @@ namespace MediaPlayer
             int nextIndex = currentIndex + 1 == totalMedia ? totalMedia : currentIndex + 1;
 
             MediaListView.SelectedIndex = nextIndex;
+        }
+
+        private static void SavePlayedMedia(Media media)
+        {
+            if (Directory.Exists("resources") is false)
+                Directory.CreateDirectory("resources");
+
+            File.AppendAllText("resources/recently.txt", $"{media.FilePath}\n");
+        }
+
+        private void LoadRecentlyPlayedMedia()
+        {
+            var recentlyMedia = File.ReadAllLines("resources/recently.txt");
+
+            var recentlyPlayedList = _mediaController.RecentlyPlayedList;
+
+            LoadMedia(recentlyPlayedList, recentlyMedia);
+        }
+
+        private void RecentlyPlayedListView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            var selectedMedia = (Media)RecentlyPlayedListView.SelectedItem;
+
+            if (selectedMedia is not null)
+            {
+                _mediaController.CurrentMedia = selectedMedia;
+
+                RecentlyPlayedListView.ScrollIntoView(RecentlyPlayedListView.SelectedItem);
+
+                Player.Source = new Uri(selectedMedia.FilePath, UriKind.Absolute);
+                Player.Stop();
+
+                _mediaTimer.Stop();
+                _mediaController.UpdateState(MediaState.Stopped);
+
+                InitNewTimer();
+            }
+        }
+
+        private void ClearRecentlyListButton_Click(object sender, RoutedEventArgs e)
+        {
+            _mediaController.RecentlyPlayedList.MediaList.Clear();
+
+            File.WriteAllText("resources/recently.txt", "");
         }
     }
 }

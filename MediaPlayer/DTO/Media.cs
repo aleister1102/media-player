@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace MediaPlayer.DTO
 {
-    public class Media
+    public class Media : ICloneable
     {
         public string FilePath { get; set; } = string.Empty;
 
         public string Name => Path.GetFileName(FilePath);
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

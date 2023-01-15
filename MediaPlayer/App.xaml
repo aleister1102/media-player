@@ -14,7 +14,7 @@
         <Style x:Key="RectangularButton">
             <Setter Property="Button.Width" Value="140" />
             <Setter Property="Button.Height" Value="30" />
-            <Setter Property="Button.Margin" Value="5,0" />
+            <Setter Property="Button.Margin" Value="3" />
             <Setter Property="Button.FontSize" Value="12" />
         </Style>
     </Application.Resources>
