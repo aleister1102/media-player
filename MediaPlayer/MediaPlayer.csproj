@@ -12,10 +12,11 @@
     <None Remove="images\pause.png" />
     <None Remove="images\play.png" />
     <None Remove="images\reset.png" />
+    <None Remove="images\stop.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="images\icon.ico" />
+    <Resource Include="images\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +27,7 @@
     <Resource Include="images\pause.png" />
     <Resource Include="images\play.png" />
     <Resource Include="images\reset.png" />
+    <Resource Include="images\stop.png" />
   </ItemGroup>
 
 </Project>
