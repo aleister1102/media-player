@@ -106,7 +106,7 @@ namespace MediaPlayer
                 if (_mediaController.IsPlaying())
                 {
                     Player.Pause();
-                    _mediaTimer.Stop();
+                    _mediaTimer.Pause();
                     _mediaController.UpdateState(MediaState.Paused);
                 }
                 else
@@ -225,7 +225,11 @@ namespace MediaPlayer
 
         private void LoadPlaylistButton_Click(object sender, RoutedEventArgs e)
         {
-            var browsingScreen = new OpenFileDialog() { Multiselect = true };
+            var browsingScreen = new OpenFileDialog()
+            {
+                Filter = "Text Files|*.txt",
+                Multiselect = true
+            };
 
             if (browsingScreen.ShowDialog() is true)
             {
@@ -278,7 +282,7 @@ namespace MediaPlayer
 
             int totalMedia = _mediaController.CurrentPlaylist.MediaList.Count;
 
-            int previousIndex = (currentIndex - 1 >= 0 ? currentIndex - 1 : 0) % totalMedia;
+            int previousIndex = currentIndex - 1 < 0 ? 0 : currentIndex - 1;
 
             MediaListView.SelectedIndex = previousIndex;
         }
@@ -290,7 +294,7 @@ namespace MediaPlayer
 
             int totalMedia = _mediaController.CurrentPlaylist.MediaList.Count;
 
-            int nextIndex = (currentIndex + 1) % totalMedia;
+            int nextIndex = currentIndex + 1 == totalMedia ? totalMedia : currentIndex + 1;
 
             MediaListView.SelectedIndex = nextIndex;
         }

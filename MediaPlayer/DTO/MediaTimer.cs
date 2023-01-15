@@ -14,6 +14,8 @@ namespace MediaPlayer.DTO
 
         public void Start() => Timer.Start();
 
+        public void Pause() => Timer.Stop();
+
         public void Stop()
         {
             Timer.Stop();

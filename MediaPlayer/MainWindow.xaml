@@ -16,7 +16,23 @@
         <local:TimeSpanToTextConverter x:Key="TimeSpanToTextConverter" />
         <local:TimeSpanToSecondsConverter x:Key="TimeSpanToSecondsConverter" />
         <local:ShuffleButtonBackgroundConverter x:Key="ShuffleButtonBackgroundConverter" />
+
+        <RoutedUICommand x:Key="PlayOrPause" Text="Play or pause" />
+        <RoutedUICommand x:Key="Next" Text="Next media" />
     </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource PlayOrPause}" Executed="PlayButton_Click" />
+        <CommandBinding Command="{StaticResource Next}" Executed="NextButton_Click" />
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Command="{StaticResource PlayOrPause}" Gesture="Space" />
+        <KeyBinding
+            Key="Right"
+            Command="{StaticResource Next}"
+            Modifiers="Ctrl" />
+    </Window.InputBindings>
 
     <DockPanel>
         <!--  Controls  -->
