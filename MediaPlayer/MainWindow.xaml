@@ -85,18 +85,34 @@
                 Width="300"
                 Height="800"
                 DockPanel.Dock="Left">
+
+                <!--  Browse button  -->
                 <Button
                     Name="BrowseButton"
                     Click="BrowseButton_Click"
                     Content="Browse"
                     Style="{StaticResource RectangularButton}" />
 
+                <!--  Playlist combo box  -->
+                <ComboBox
+                    Name="PlaylistComboBox"
+                    Width="280"
+                    Margin="0,10"
+                    ItemsSource="{Binding Path=Playlists}"
+                    SelectionChanged="PlaylistComboBox_SelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
                 <!--  Media list  -->
                 <StackPanel Margin="0,10,0,0">
                     <ListView
                         Name="MediaListView"
-                        Height="520"
-                        ItemsSource="{Binding Path=MediaList}"
+                        Height="500"
+                        ItemsSource="{Binding Path=CurrentPlaylist.MediaList}"
                         SelectionChanged="MediaListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -105,6 +121,58 @@
                         </ListView.ItemTemplate>
                     </ListView>
                 </StackPanel>
+
+                <!--  Playlist buttons  -->
+                <WrapPanel
+                    Margin="0,10"
+                    HorizontalAlignment="Center"
+                    Orientation="Horizontal">
+
+                    <Button
+                        Name="CreatePlaylistButton"
+                        Width="140"
+                        Height="30"
+                        Margin="5,0"
+                        Click="CreatePlaylistButton_Click"
+                        Content="Create new playlist" />
+
+                    <Button
+                        Name="SavePlaylistButton"
+                        Width="140"
+                        Height="30"
+                        Margin="5,0"
+                        Click="SavePlaylistButton_Click"
+                        Content="Save current playlist" />
+
+                    <Button
+                        Name="ClearPlaylistButton"
+                        Width="140"
+                        Height="30"
+                        Margin="5,0"
+                        Click="ClearPlaylistButton_Click"
+                        Content="Clear current playlist" />
+
+                    <Button
+                        Name="DeletePlaylistButton"
+                        Width="140"
+                        Height="30"
+                        Margin="5,0"
+                        Click="DeletePlaylistButton_Click"
+                        Content="Delete current playlist" />
+
+                    <TextBox
+                        Name="PlaylistNameTextBox"
+                        Width="290"
+                        Height="30"
+                        Margin="5,10"
+                        HorizontalAlignment="Center" />
+
+                    <TextBlock
+                        Name="Message"
+                        Width="290"
+                        Margin="5,0"
+                        FontSize="14" />
+                </WrapPanel>
             </StackPanel>
         </Border>
 

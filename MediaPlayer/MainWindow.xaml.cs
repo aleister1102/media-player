@@ -1,9 +1,13 @@
 ﻿using MediaPlayer.DTO;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Threading;
 
 namespace MediaPlayer
@@ -41,9 +45,11 @@ namespace MediaPlayer
         {
             foreach (var filePath in filesPaths)
             {
-                if (_mediaController.MediaList.Any((media) => media.FilePath == filePath) is false)
+                var currentMediaList = _mediaController.CurrentPlaylist.MediaList;
+
+                if (currentMediaList.Any((media) => media.FilePath == filePath) is false)
                 {
-                    _mediaController.MediaList.Add(new Media() { FilePath = filePath });
+                    currentMediaList.Add(new Media() { FilePath = filePath });
                 }
             }
         }
@@ -139,6 +145,76 @@ namespace MediaPlayer
             TimeSpan newPosition = TimeSpan.FromSeconds(value);
 
             Player.Position = newPosition;
+        }
+
+        private void PlaylistComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            var selectedPlayList = (MediaPlaylist)PlaylistComboBox.SelectedItem;
+
+            if (selectedPlayList is not null)
+            {
+                _mediaController.CurrentPlaylist = selectedPlayList;
+            }
+        }
+
+        private void CreatePlaylistButton_Click(object sender, RoutedEventArgs e)
+        {
+            string playListName = PlaylistNameTextBox.Text;
+
+            if (playListName == "")
+            {
+                Message.Text = "Fail: please type a playlist name!";
+            }
+            else
+            {
+                if (_mediaController.Playlists.Any(playlist => playlist.Name == playListName))
+                    Message.Text = "Fail: this playlist already exists!";
+                else
+                {
+                    var newPlaylist = new MediaPlaylist { Name = playListName };
+
+                    _mediaController.Playlists.Add(newPlaylist);
+
+                    PlaylistComboBox.SelectedItem = newPlaylist;
+
+                    Message.Text = "Success: create playlist successfully!";
+                }
+            }
+        }
+
+        private void SavePlaylistButton_Click(object sender, RoutedEventArgs e)
+        {
+            MediaPlaylist playList = _mediaController.CurrentPlaylist;
+
+            if (Directory.Exists("playlists") is false)
+            {
+                Directory.CreateDirectory("playlists");
+            }
+
+            if (playList is not null)
+            {
+                string playListName = playList.Name;
+                string path = Path.Combine("playlists", $"{playListName}.txt");
+
+                List<string> mediaList = playList.MediaList.Select(media => media.FilePath).ToList();
+
+                File.WriteAllText(path, $"Playlist name:  {playListName}\n");
+                File.AppendAllLines(path, mediaList);
+
+                Message.Text = "Success: save playlist successfully!";
+            }
+        }
+
+        private void ClearPlaylistButton_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void DeletePlaylistButton_Click(object sender, RoutedEventArgs e)
+        {
+            var currentPlaylist = (MediaPlaylist)PlaylistComboBox.SelectedItem;
+
+            if (currentPlaylist is not null)
+                _mediaController.Playlists.Remove(currentPlaylist);
         }
     }
 }

@@ -19,7 +19,9 @@ namespace MediaPlayer.DTO
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ObservableCollection<Media> MediaList { get; set; } = new();
+        public ObservableCollection<MediaPlaylist> Playlists { get; set; } = new();
+
+        public MediaPlaylist CurrentPlaylist { get; set; }
 
         public Media CurrentMedia { get; set; } = new();
 
