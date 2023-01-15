@@ -1,5 +1,4 @@
-﻿using Accessibility;
-using MediaPlayer.DTO;
+﻿using MediaPlayer.DTO;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Printing;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -178,9 +176,12 @@ namespace MediaPlayer
             {
                 _mediaController.CurrentPlaylist = selectedPlayList;
 
-                string[] mediaPaths = File.ReadAllLines(selectedPlayList.Path).Skip(1).ToArray();
+                if (selectedPlayList.Path != string.Empty)
+                {
+                    string[] mediaPaths = File.ReadAllLines(selectedPlayList.Path).Skip(1).ToArray();
 
-                LoadMedia(_mediaController.CurrentPlaylist, mediaPaths);
+                    LoadMedia(_mediaController.CurrentPlaylist, mediaPaths);
+                }
             }
         }
 
@@ -207,8 +208,7 @@ namespace MediaPlayer
                     var newPlaylist = new MediaPlaylist { Name = playListName };
 
                     _mediaController.Playlists.Add(newPlaylist);
-
-                    PlaylistComboBox.SelectedItem = newPlaylist;
+                    _mediaController.CurrentPlaylist = newPlaylist;
 
                     MessageBox.Show("Create playlist successfully!",
                                     "Success",
@@ -262,7 +262,12 @@ namespace MediaPlayer
             var currentPlaylist = (MediaPlaylist)PlaylistComboBox.SelectedItem;
 
             if (currentPlaylist is not null)
+            {
                 _mediaController.Playlists.Remove(currentPlaylist);
+
+                if (currentPlaylist.Path != string.Empty)
+                    File.Delete(currentPlaylist.Path);
+            }
         }
 
         private void DeleteMedia_Click(object sender, RoutedEventArgs e)
