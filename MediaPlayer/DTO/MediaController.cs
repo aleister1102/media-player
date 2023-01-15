@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System;
-using System.Windows;
 using System.ComponentModel;
+using System.Windows.Media.Imaging;
 
 namespace MediaPlayer.DTO
 {
@@ -20,20 +18,16 @@ namespace MediaPlayer.DTO
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public ObservableCollection<MediaPlaylist> Playlists { get; set; } = new();
-
         public MediaPlaylist CurrentPlaylist { get; set; } = new();
-
         public MediaPlaylist RecentlyPlayedList { get; set; } = new();
-
         public Media CurrentMedia { get; set; } = new();
 
         public string State { get; set; } = "stop";
-
         public BitmapImage PlayButtonImage { get; set; } = new();
-
         public string WindowTitle { get; set; } = string.Empty;
-
         public bool IsShuffled { get; set; } = false;
+
+        public MediaTimer Timer { get; set; } = new();
 
         public MediaController()
         {

@@ -21,5 +21,11 @@ namespace MediaPlayer.DTO
             Timer.Stop();
             TimeElapsed = TimeSpan.Zero;
         }
+
+        public void InitNewTimer(EventHandler timerTick)
+        {
+            Timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 1, 0) };
+            Timer.Tick += timerTick;
+        }
     }
 }
