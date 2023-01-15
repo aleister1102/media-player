@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace MediaPlayer
+namespace MediaPlayer.converters
 {
     internal class TimeSpanToTextConverter : IValueConverter
     {
@@ -10,7 +10,13 @@ namespace MediaPlayer
         {
             var timeSpan = (TimeSpan)value;
 
-            string result = $"{timeSpan.Hours}:{timeSpan.Minutes}:{timeSpan.Seconds}";
+            int hours = timeSpan.Hours;
+            int minutes = timeSpan.Minutes;
+            int seconds = timeSpan.Seconds;
+
+            string result = $"{(hours < 10 ? $"0{hours}" : hours)}:" +
+                            $"{(minutes < 10 ? $"0{minutes}" : minutes)}:" +
+                            $"{(seconds < 10 ? $"0{seconds}" : seconds)}";
 
             return result;
         }
