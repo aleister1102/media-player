@@ -17,6 +17,7 @@
         <converters:TimeSpanToTextConverter x:Key="TimeSpanToTextConverter" />
         <converters:TimeSpanToSecondsConverter x:Key="TimeSpanToSecondsConverter" />
         <converters:ShuffleButtonBackgroundConverter x:Key="ShuffleButtonBackgroundConverter" />
+        <converters:StateToToolTipConverter x:Key="StateToToolTipConverter" />
 
         <RoutedUICommand x:Key="PlayOrPause" Text="Play or pause" />
         <RoutedUICommand x:Key="Next" Text="Next media" />
@@ -49,6 +50,7 @@
                     Margin="0,10"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal">
+
                     <TextBlock
                         Name="TimeElapsed"
                         d:Text="0:00:01"
@@ -80,7 +82,8 @@
                 <Button
                     Name="PreviousButton"
                     Click="PreviousButton_Click"
-                    Style="{StaticResource ControlButton}">
+                    Style="{StaticResource ControlButton}"
+                    ToolTip="Previous">
                     <Image Source="images/previous.png" />
                 </Button>
 
@@ -88,28 +91,32 @@
                     Name="ShuffleButton"
                     Background="{Binding Path=IsShuffled, Converter={StaticResource ShuffleButtonBackgroundConverter}}"
                     Click="ShuffleButton_Click"
-                    Style="{StaticResource ControlButton}">
+                    Style="{StaticResource ControlButton}"
+                    ToolTip="Toggle shuffle mode">
                     <Image Source="images/shuffle.png" />
                 </Button>
 
                 <Button
                     Name="PlayButton"
                     Click="PlayButton_Click"
-                    Style="{StaticResource ControlButton}">
+                    Style="{StaticResource ControlButton}"
+                    ToolTip="{Binding Path=State, Converter={StaticResource StateToToolTipConverter}}">
                     <Image Name="PlayButtonImage" Source="{Binding Path=PlayButtonImage}" />
                 </Button>
 
                 <Button
                     Name="StopButton"
                     Click="StopButton_Click"
-                    Style="{StaticResource ControlButton}">
+                    Style="{StaticResource ControlButton}"
+                    ToolTip="Stop">
                     <Image Source="images/stop.png" />
                 </Button>
 
                 <Button
                     Name="NextButton"
                     Click="NextButton_Click"
-                    Style="{StaticResource ControlButton}">
+                    Style="{StaticResource ControlButton}"
+                    ToolTip="Next">
                     <Image Source="images/next.png" />
                 </Button>
             </StackPanel>
