@@ -263,23 +263,36 @@ namespace MediaPlayer
         {
             int currentIndex = MediaListView.SelectedIndex;
             int totalMedia = _mediaController.CurrentPlaylist.MediaList.Count;
-            int nextIndex = GetNextMediaIndex(currentIndex, totalMedia);
+
+            int nextIndex = _mediaController.IsShuffled
+                ? new Random().Next(totalMedia)
+                : (currentIndex + 1) % totalMedia;
 
             MediaListView.SelectedIndex = nextIndex;
         }
 
-        private int GetNextMediaIndex(int currentIndex, int totalMedia)
+        private void PreviousButton_Click(object sender, RoutedEventArgs e)
         {
-            int nextIndex;
+            int currentIndex = MediaListView.SelectedIndex;
+            if (currentIndex is -1) return;
 
-            if (_mediaController.IsShuffled)
-            {
-                nextIndex = new Random().Next(totalMedia);
-            }
-            else
-                nextIndex = (currentIndex + 1) % totalMedia;
+            int totalMedia = _mediaController.CurrentPlaylist.MediaList.Count;
 
-            return nextIndex;
+            int previousIndex = (currentIndex - 1 >= 0 ? currentIndex - 1 : 0) % totalMedia;
+
+            MediaListView.SelectedIndex = previousIndex;
+        }
+
+        private void NextButton_Click(object sender, RoutedEventArgs e)
+        {
+            int currentIndex = MediaListView.SelectedIndex;
+            if (currentIndex is -1) return;
+
+            int totalMedia = _mediaController.CurrentPlaylist.MediaList.Count;
+
+            int nextIndex = (currentIndex + 1) % totalMedia;
+
+            MediaListView.SelectedIndex = nextIndex;
         }
     }
 }

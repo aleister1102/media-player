@@ -10,8 +10,10 @@
 
   <ItemGroup>
     <None Remove="images\delete.png" />
+    <None Remove="images\next.png" />
     <None Remove="images\pause.png" />
     <None Remove="images\play.png" />
+    <None Remove="images\previous.png" />
     <None Remove="images\reset.png" />
     <None Remove="images\shuffle.png" />
     <None Remove="images\skip-to-start.png" />
@@ -20,7 +22,7 @@
 
   <ItemGroup>
     <Resource Include="images\delete.png" />
-    <SplashScreen Include="images\icon.ico" />
+    <Resource Include="images\icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,10 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="images\next.png" />
     <Resource Include="images\pause.png" />
     <Resource Include="images\play.png" />
+    <Resource Include="images\previous.png" />
     <Resource Include="images\shuffle.png" />
-    <Resource Include="images\skip-to-start.png" />
     <Resource Include="images\stop.png" />
   </ItemGroup>
 

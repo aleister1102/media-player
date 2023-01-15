@@ -60,6 +60,21 @@
                 Orientation="Horizontal">
 
                 <Button
+                    Name="PreviousButton"
+                    Click="PreviousButton_Click"
+                    Style="{StaticResource ControlButton}">
+                    <Image Source="images/previous.png" />
+                </Button>
+
+                <Button
+                    Name="ShuffleButton"
+                    Background="{Binding Path=IsShuffled, Converter={StaticResource ShuffleButtonBackgroundConverter}}"
+                    Click="ShuffleButton_Click"
+                    Style="{StaticResource ControlButton}">
+                    <Image Source="images/shuffle.png" />
+                </Button>
+
+                <Button
                     Name="PlayButton"
                     Click="PlayButton_Click"
                     Style="{StaticResource ControlButton}">
@@ -74,11 +89,10 @@
                 </Button>
 
                 <Button
-                    Name="ShuffleButton"
-                    Background="{Binding Path=IsShuffled, Converter={StaticResource ShuffleButtonBackgroundConverter}}"
-                    Click="ShuffleButton_Click"
+                    Name="NextButton"
+                    Click="NextButton_Click"
                     Style="{StaticResource ControlButton}">
-                    <Image Source="images/shuffle.png" />
+                    <Image Source="images/next.png" />
                 </Button>
             </StackPanel>
         </StackPanel>
@@ -206,8 +220,8 @@
                 <MediaElement
                     x:Name="Player"
                     LoadedBehavior="Manual"
-                    MediaOpened="Player_MediaOpened"
-                    MediaEnded="Player_MediaEnded"/>
+                    MediaEnded="Player_MediaEnded"
+                    MediaOpened="Player_MediaOpened" />
             </StackPanel>
         </Border>
     </DockPanel>
